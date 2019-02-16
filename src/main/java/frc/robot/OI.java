@@ -10,9 +10,20 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.ArrowInCommand;
+import frc.robot.commands.ArrowOutCommand;
+import frc.robot.commands.DeanKamenSupportCommand;
+import frc.robot.commands.FrontExtendCommand;
+import frc.robot.commands.FrontRetractCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LineUpCommand;
 import frc.robot.commands.OuttakeCommand;
+import frc.robot.commands.RearExtendCommand;
+import frc.robot.commands.RearRetractCommand;
+import frc.robot.commands.SwitchSideViewCommand;
+import frc.robot.commands.SwitchViewCommand;
+import frc.robot.commands.WoodieFlowerBloomCommand;
+import frc.robot.commands.WoodieFlowerFadeCommand;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -22,23 +33,39 @@ public class OI {
 
   private Joystick driver,
                    operator;
-  private Button lineup,
-                 intake,
-                 outtake;
+  private Button switchView, switchStream, openFlower, closeFlower, foldFlower, frontUp, frontDown, rearUp, rearDown;
+  private Button lineup, intakebutton;
 
   public OI(){
     driver = new Joystick(RobotMap.DRIVER_PORT);
     operator = new Joystick(RobotMap.OPERATOR_PORT);
-    lineup = new JoystickButton(driver, 1);
+   
+    setButtons();
+ 
+    intakebutton.whileHeld( new IntakeCommand());
+    foldFlower.whileHeld(new OuttakeCommand());
 
     lineup.whileHeld(new LineUpCommand());
-    while(operator.getPOV() == 0){
+
+    openFlower.whenPressed(new ArrowOutCommand());
+    closeFlower.whenPressed(new ArrowInCommand());
+    //foldFlower.toggleWhenPressed(new DeanKamenSupportCommand());
+    frontUp.whenPressed(new FrontRetractCommand());
+    frontDown.whenPressed(new FrontExtendCommand());
+    rearUp.whenPressed(new RearRetractCommand());
+    rearDown.whenPressed(new RearExtendCommand());
+
+    switchView.whenPressed(new SwitchViewCommand());
+    switchStream.whenPressed(new SwitchSideViewCommand());
+
+    System.out.println(operator.getY());
+    while(operator.getY() < 0){
+      System.out.println("loop1: " + operator.getRawAxis(1));
       new IntakeCommand();
-      System.out.println(operator.getPOV());
   }
-    while(operator.getPOV() == 4){
+    while(operator.getRawAxis(1) > 0) {
+      System.out.println("loop2: " + operator.getRawAxis(1));
       new OuttakeCommand();
-      System.out.println(operator.getPOV());
     }
   }
 
@@ -49,4 +76,23 @@ public class OI {
   public double getDriverRightJoystick(){
     return driver.getRawAxis(RobotMap.DRIVER_RIGHT_Y);
   }
+
+  public void setButtons(){
+    lineup = new JoystickButton(driver, 1);
+
+    switchView = new JoystickButton(operator, 4);
+    switchStream = new JoystickButton(operator, 2);
+    foldFlower = new JoystickButton(operator, 5);
+    openFlower = new JoystickButton(operator, 3);
+    closeFlower = new JoystickButton(operator, 1);
+    frontUp = new JoystickButton(operator, 7);
+    frontDown = new JoystickButton(operator, 8);
+    rearDown  = new JoystickButton(operator, 10);
+    rearUp = new JoystickButton(operator, 9);
+
+    intakebutton = new JoystickButton(operator, 6);
+
+
+  }
+
 }

@@ -36,7 +36,7 @@ public class Drive extends Subsystem {
     rearRight.follow(frontRight);
     rearLeft.follow(frontLeft);
 
-    frontLeft.setInverted(false); // pick CW versus CCW when motor controller is positive/green
+    frontLeft.setInverted(true); // pick CW versus CCW when motor controller is positive/green
     frontRight.setInverted(false); // pick CW versus CCW when motor controller is positive/green
    
     rearRight.setInverted(InvertType.FollowMaster);
@@ -45,8 +45,8 @@ public class Drive extends Subsystem {
   }
   
   public void TeleOpDrive(double left, double right){
-    frontLeft.set(ControlMode.PercentOutput, right);
-    frontRight.set(ControlMode.PercentOutput, -left);
+    frontLeft.set(ControlMode.PercentOutput, left);
+    frontRight.set(ControlMode.PercentOutput, right);
    // rearLeft.set(ControlMode.PercentOutput, right);
    // rearRight.set(ControlMode.PercentOutput, -left);
 

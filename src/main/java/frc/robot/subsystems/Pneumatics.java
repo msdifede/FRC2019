@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
-public class Beak extends Subsystem {
+public class Pneumatics extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-
   private DoubleSolenoid piston;
+  public boolean isOpen;
 
   @Override
   public void initDefaultCommand() {
@@ -25,21 +25,27 @@ public class Beak extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());
   }
 
-  private Beak() {
-		piston = new DoubleSolenoid(0, 1);
+  public Pneumatics(int a, int b) {
+    piston = new DoubleSolenoid(a, b);
 	}
   
   public void open() {
-		piston.set(DoubleSolenoid.Value.kForward);
+    piston.set(DoubleSolenoid.Value.kForward);
+    isOpen = true;
 	}
 	
 	public void close() {
-		piston.set(DoubleSolenoid.Value.kReverse);
+    piston.set(DoubleSolenoid.Value.kReverse);
+    isOpen = false;
 	}
 	
 	public void off() {
 		piston.set(DoubleSolenoid.Value.kOff);
-	}
+  }
+  
+  public boolean getisOpen(){
+    return isOpen;
+  }
 
 
 

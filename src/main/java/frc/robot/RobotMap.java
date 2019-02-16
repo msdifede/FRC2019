@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
@@ -22,9 +24,9 @@ public class RobotMap {
   //Controller Values
   
   //VICTOR Chasis Motor Constants
-  public static int VICTOR_FRONT_RIGHT = 4;
+  public static int VICTOR_FRONT_RIGHT = 6; //4
   public static int VICTOR_FRONT_LEFT = 5;
-  public static int VICTOR_REAR_RIGHT = 6;
+  public static int VICTOR_REAR_RIGHT = 4; //6
   public static int VICTOR_REAR_LEFT = 7;
 
   //VICTOR Wrist Constants
@@ -46,8 +48,6 @@ public class RobotMap {
 	public static int OPERATOR_LEFT_X = 0;
 	public static int OPERATOR_LEFT_Y = 1;
 	public static int OPERATOR_RIGHT_X = 4;
-  public static int OPERATOR_RIGHT_Y = 5;
+  public static int OPERATOR_RIGHT_Y = 5; 
   
-  
-
 }

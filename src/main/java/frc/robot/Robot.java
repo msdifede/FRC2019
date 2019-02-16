@@ -10,15 +10,16 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.DriveCommand;
+import frc.robot.subsystems.Arrow;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Pneumatics;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,6 +33,8 @@ public class Robot extends TimedRobot {
   public static OI m_oi;
   public static Limelight limelight;
   public static Intake intake;
+  public static Arrow arrow;
+  public static Pneumatics woodieflowers, deankamen, front, rear;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -43,11 +46,15 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-
     driveTrain = new Drive(  new VictorSPX(RobotMap.VICTOR_FRONT_LEFT), new VictorSPX(RobotMap.VICTOR_FRONT_RIGHT),
                               new VictorSPX(RobotMap.VICTOR_REAR_LEFT), new VictorSPX(RobotMap.VICTOR_REAR_RIGHT));
     limelight = new Limelight();
     intake = new Intake(new VictorSPX(RobotMap.VICTOR_INTAKE));
+    woodieflowers = new Pneumatics(4,5);
+    deankamen = new Pneumatics(6,7);
+    front = new Pneumatics(0,1);
+    rear = new Pneumatics(2,3);
+    arrow = new Arrow(new VictorSPX(2));
     m_oi = new OI();
     m_chooser.setDefaultOption("Default Auto", new DriveCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -134,6 +141,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+  
   }
 
   /**
