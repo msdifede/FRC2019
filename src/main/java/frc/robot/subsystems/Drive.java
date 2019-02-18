@@ -10,20 +10,25 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.command.Subsystem; 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.commands.DriveCommand;
 
-/**
- * An example subsystem.  You can replace me with your own Subsystem.
- */
+
 public class Drive extends Subsystem {
 
   private VictorSPX frontLeft;
   private VictorSPX frontRight;
   private VictorSPX rearLeft;
   private VictorSPX rearRight;
-
+  private double Kp = 0.7;
+  private Encoder right;
+  private Encoder left;
+  private AHRS ahrs;
 
   public Drive( VictorSPX fl, VictorSPX fr, VictorSPX rl, VictorSPX rr ){
     super();
@@ -42,18 +47,46 @@ public class Drive extends Subsystem {
     rearRight.setInverted(InvertType.FollowMaster);
     rearLeft.setInverted(InvertType.FollowMaster); // match whatever talon0 is
     //_victor0.setInverted(InvertType.OpposeMaster); // opposite whatever talon0 is
+
+    try{
+      ahrs = new AHRS(SPI.Port.kMXP);
+    } catch (RuntimeException ex ){
+      DriverStation.reportError("Error instantiating nvX " + ex.getMessage(), true);
+    }
   }
   
   public void TeleOpDrive(double left, double right){
-    frontLeft.set(ControlMode.PercentOutput, left);
-    frontRight.set(ControlMode.PercentOutput, right);
+    frontLeft.set(ControlMode.PercentOutput, Kp*left);
+    frontRight.set(ControlMode.PercentOutput, Kp*right);
    // rearLeft.set(ControlMode.PercentOutput, right);
    // rearRight.set(ControlMode.PercentOutput, -left);
 
   }
 
+  public double getRightEncoder(){
+    return right.get();
+  }
+
+  public double getLeftEncoder(){
+    return left.get();
+  }
   @Override
   public void initDefaultCommand() {
     setDefaultCommand(new DriveCommand());
   }
+
+
+  public void resetGyro(){
+    ahrs.reset();
+  }
+
+  public double getAngle(){
+    return ahrs.getAngle();
+  }
+
+  
+ 
+
+
+
 }

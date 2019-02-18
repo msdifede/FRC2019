@@ -22,8 +22,9 @@ public class ArrowInCommand extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    t = new Timer();
-    t.start();
+    // t = new Timer();
+    // t.start();
+    setTimeout(.4);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -35,10 +36,11 @@ public class ArrowInCommand extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if(t.get() > .3){
-      return true;
-    }
-    return false;
+    return isTimedOut();
+    // if(t.get() > .3){
+    //   return true;
+    // }
+    // return false;
   }
 
   // Called once after isFinished returns true

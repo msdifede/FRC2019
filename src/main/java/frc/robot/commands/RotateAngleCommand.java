@@ -11,60 +11,76 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class LineUpCommand extends Command {
+public class RotateAngleCommand extends Command {
 
-  double Kp;
-  double base;
-  double Kp2;
-  int preView;
+  private double Kp;
 
-  public LineUpCommand() {
+  private final double TOLERANCE = 2;
+  private double angle;
+  private double startAngle;
+  private double finishAngle;
+
+  public RotateAngleCommand( double angle ) {
     requires(Robot.driveTrain);
-    requires(Robot.limelight);
+    this.angle = angle;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-  //  preView = Robot.limelight.getView();
-    Robot.limelight.setView(0);
-    Kp= 0.03;
-    base = 0.3;
-    Kp2 = 0.10;
+    Kp= 0.03; //.003
+    startAngle = Robot.driveTrain.getAngle();
+    finishAngle = startAngle + angle;
   }
 
   @Override
   protected void execute() {
     
+    double headingerror = Kp*getError();
 
-    double headingerror = Kp*Robot.limelight.getX();
-    double leftcommand = 0, rightcommand = 0;
-    double forwarderror = Kp2*(8 - Robot.limelight.getArea());
+    if( headingerror > .5 ){
+      headingerror = .5;
+    }
+  
+    if( headingerror < -.5 ){
+      headingerror = -.5;
+    }
 
-    leftcommand = forwarderror + headingerror;
-    rightcommand = forwarderror - headingerror;
+    double leftcommand =  -headingerror;
+    double rightcommand = headingerror;
 
     Robot.driveTrain.TeleOpDrive(-leftcommand, -rightcommand);
+
     SmartDashboard.putNumber("LeftCommand", leftcommand);
     SmartDashboard.putNumber("RightCommand", rightcommand);
   }
 
+  //returns heading error between -180 and 180
+  private double getError(){
+    double err = Robot.driveTrain.getAngle() - finishAngle;
+    if( err > 180 ){
+      err = ( err - 180 );
+    }else if ( err < -180){
+      err = - (err + 180);
+    }else {
 
+    }
+    return err;
+  }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-     if(Robot.limelight.seesTarget() ||  Robot.limelight.getArea() == 8){
-       return false;
+     if( Math.abs(getError()) < TOLERANCE ) {
+       return true;
      }
-     return true;
+     return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
     Robot.driveTrain.TeleOpDrive(0, 0);
-    Robot.limelight.setView(1);
   }
 
   // Called when another command which requires one or more of the same
@@ -72,6 +88,5 @@ public class LineUpCommand extends Command {
   @Override
   protected void interrupted() {
     Robot.driveTrain.TeleOpDrive(0, 0);
-    //Robot.limelight.setView(1);
   }
 }
