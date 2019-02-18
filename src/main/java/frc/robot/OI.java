@@ -20,15 +20,16 @@ import frc.robot.commands.*;
 public class OI {
 
   private Joystick driver, operator;
-  private Button switchView, switchStream, openFlower, closeFlower, foldFlower, frontUp, frontDown, rearUp,
-  rearDown, lineup, intakebutton, drivestraight, lineupcg;
+  private Button greenButton, redButton, pinkButton, purpleButton, foldFlower, frontUp, frontDown, rearUp,
+  rearDown, driverA, intakebutton, driverB, driverY, driverX, l2lt, r2rt;
+
 
   public OI(){
     driver = new Joystick(RobotMap.DRIVER_PORT);
-  //  operator = new Joystick(RobotMap.OPERATOR_PORT);
+    operator = new Joystick(RobotMap.OPERATOR_PORT);
    
-  //  setButtons();
-  //  setCommands();
+    setButtons();
+    setCommands();
  
 
   //   System.out.println(operator.getY());
@@ -51,39 +52,51 @@ public class OI {
   }
 
   public void setButtons(){
-    lineup = new JoystickButton(driver, 1);
+    
 
-    switchView = new JoystickButton(operator, 4);
-    switchStream = new JoystickButton(operator, 2);
-    foldFlower = new JoystickButton(operator, 5);
-    openFlower = new JoystickButton(operator, 3);
-    closeFlower = new JoystickButton(operator, 1);
-    frontUp = new JoystickButton(operator, 7);
-    frontDown = new JoystickButton(operator, 8);
-    rearDown  = new JoystickButton(operator, 10);
-    rearUp = new JoystickButton(operator, 9);
-    drivestraight = new JoystickButton(driver, 2);
-    intakebutton = new JoystickButton(operator, 6);
-    lineupcg = new JoystickButton(driver, 4);
+    l2lt = new JoystickAnalogButton(operator, 2, 0.5);
+    r2rt = new JoystickAnalogButton(operator, 3, 0.5);
+
+    greenButton = new JoystickButton(operator, 4);  //green button
+    redButton = new JoystickButton(operator, 2); //red button
+    foldFlower = new JoystickButton(operator, 5);  //topleft gray
+    pinkButton = new JoystickButton(operator, 3); //pink button
+    purpleButton = new JoystickButton(operator, 1); //purplebutton
+    frontUp = new JoystickButton(operator, 7); //top 1
+    frontDown = new JoystickButton(operator, 8); //top 2
+    rearDown  = new JoystickButton(operator, 10); //top 4
+    rearUp = new JoystickButton(operator, 9);  //top3
+    intakebutton = new JoystickButton(operator, 6); //top right gray
+
+    driverA = new JoystickButton(driver, 1);
+    driverB = new JoystickButton(driver, 2);
+    driverX = new JoystickButton( driver, 3);
+    driverY = new JoystickButton(driver, 4);
+    
   }
 
   public void setCommands(){
     intakebutton.whileHeld( new IntakeCommand());
     foldFlower.whileHeld(new OuttakeCommand());
-    lineup.whileHeld(new LineUpCommand());
-    drivestraight.whileHeld(new DriveStraightCommand(.5));
-    openFlower.whenPressed(new ArrowOutNewCommand());
-    openFlower.whenReleased(new ArrowInCommand());
-    closeFlower.whenPressed(new ArrowInCommand());
+    l2lt.whileHeld(new PushHatchCommand()); //new command
+   
+   
+    driverA.whileHeld(new LineUpCommand());
+    driverB.whileHeld(new DriveStraightCommand(.5));
+    pinkButton.whenPressed(new ArrowOutNewCommand());
+    pinkButton.whenReleased(new ArrowInCommand());
+    purpleButton.whenPressed(new ArrowInCommand());
     //foldFlower.toggleWhenPressed(new DeanKamenSupportCommand());
     frontUp.whenPressed(new FrontRetractCommand());
     frontDown.whenPressed(new FrontExtendCommand());
     rearUp.whenPressed(new RearRetractCommand());
     rearDown.whenPressed(new RearExtendCommand());
-    lineupcg.whenPressed(new LineUpStraightCommandGroup());
+    driverY.whenPressed(new LineUpStraightCommandGroup());
 
-    switchView.whenPressed(new SwitchViewCommand());
-    switchStream.whenPressed(new SwitchSideViewCommand());
+    greenButton.whenPressed(new SwitchViewCommand());
+    redButton.whenPressed(new SwitchSideViewCommand());
+
+    driverX.whenPressed(new RotateAngleCommand( 90));
   }
 
 }

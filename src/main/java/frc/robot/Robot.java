@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
   public static Limelight limelight;
   public static Intake intake;
   public static Arrow arrow;
-  public static Pneumatics woodieflowers, deankamen, front, rear;
+  public static Pneumatics woodieflowers, deankamen, front, rear, pushHatch;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -50,7 +50,9 @@ public class Robot extends TimedRobot {
                               new VictorSPX(RobotMap.VICTOR_REAR_LEFT), new VictorSPX(RobotMap.VICTOR_REAR_RIGHT));
     limelight = new Limelight();
     intake = new Intake(new VictorSPX(RobotMap.VICTOR_INTAKE));
-    woodieflowers = new Pneumatics(4,5);
+    
+    pushHatch = new Pneumatics( 4, 5);
+    //woodieflowers = new Pneumatics(4,5);
     deankamen = new Pneumatics(6,7);
     front = new Pneumatics(0,1);
     rear = new Pneumatics(2,3);
