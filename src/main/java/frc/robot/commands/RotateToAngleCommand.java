@@ -31,7 +31,7 @@ public class RotateToAngleCommand extends Command {
   @Override
   protected void execute() {
     
-    double headingerror = Kp*getError();
+    double headingerror = Kp*Robot.driveTrain.getError(angle);
 
     if( headingerror > .5 ){
       headingerror = .5;
@@ -50,23 +50,10 @@ public class RotateToAngleCommand extends Command {
     SmartDashboard.putNumber("RightCommand", rightcommand);
   }
 
-  //returns heading error between -180 and 180
-  private double getError(){
-    double err = Robot.driveTrain.getAngle() - angle;
-    if( err > 180 ){
-      err = ( err - 180 );
-    }else if ( err < -180){
-      err = - (err + 180);
-    }else {
-
-    }
-    return err;
-  }
-
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-     if( Math.abs(getError()) < TOLERANCE ) {
+     if( Math.abs(Robot.driveTrain.getError(angle)) < TOLERANCE ) {
        return true;
      }
      return false;

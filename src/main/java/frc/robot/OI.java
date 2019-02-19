@@ -54,8 +54,8 @@ public class OI {
   public void setButtons(){
     
 
-    l2lt = new JoystickAnalogButton(operator, 2, 0.5);
-    r2rt = new JoystickAnalogButton(operator, 3, 0.5);
+    l2lt = new JoystickAnalogButton(operator, 2 );
+    r2rt = new JoystickAnalogButton(operator, 3 );
 
     greenButton = new JoystickButton(operator, 4);  //green button
     redButton = new JoystickButton(operator, 2); //red button
@@ -76,7 +76,9 @@ public class OI {
   }
 
   public void setCommands(){
-    intakebutton.whileHeld( new IntakeCommand());
+    intakebutton.whenPressed( new IntakeBallCommand());
+
+ 
     foldFlower.whileHeld(new OuttakeCommand());
     l2lt.whileHeld(new PushHatchCommand()); //new command
    
@@ -96,7 +98,7 @@ public class OI {
     greenButton.whenPressed(new SwitchViewCommand());
     redButton.whenPressed(new SwitchSideViewCommand());
 
-    driverX.whenPressed(new RotateAngleCommand( 90));
+    driverX.whenPressed(new DriveStraightDistanceCommand(20));
   }
 
 }

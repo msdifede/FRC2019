@@ -9,6 +9,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
   public static Intake intake;
   public static Arrow arrow;
   public static Pneumatics woodieflowers, deankamen, front, rear, pushHatch;
+  public static PowerDistributionPanel pdp;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -50,6 +52,7 @@ public class Robot extends TimedRobot {
                               new VictorSPX(RobotMap.VICTOR_REAR_LEFT), new VictorSPX(RobotMap.VICTOR_REAR_RIGHT));
     limelight = new Limelight();
     intake = new Intake(new VictorSPX(RobotMap.VICTOR_INTAKE));
+    pdp = new PowerDistributionPanel();
     
     pushHatch = new Pneumatics( 4, 5);
     //woodieflowers = new Pneumatics(4,5);
@@ -143,6 +146,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+
+    double current = pdp.getCurrent(0);
+    SmartDashboard.putNumber("current", current);
   
   }
 

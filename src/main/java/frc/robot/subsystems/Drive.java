@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.DriveCommand;
 
 
@@ -25,10 +26,11 @@ public class Drive extends Subsystem {
   private VictorSPX frontRight;
   private VictorSPX rearLeft;
   private VictorSPX rearRight;
-  private double Kp = 0.7;
+  private AHRS ahrs;
+  private double Kp;
   private Encoder right;
   private Encoder left;
-  private AHRS ahrs;
+
 
   public Drive( VictorSPX fl, VictorSPX fr, VictorSPX rl, VictorSPX rr ){
     super();
@@ -36,17 +38,20 @@ public class Drive extends Subsystem {
     frontRight = fr;
     rearLeft = rl;
     rearRight = rr;
+    Kp = 0.7;
+    right = new Encoder(2, 3, true, Encoder.EncodingType.k4X);
+    left = new Encoder(0, 1, true, Encoder.EncodingType.k4X);
 
+
+    right.setDistancePerPulse(.06264);
+    left.setDistancePerPulse(.06264);
 
     rearRight.follow(frontRight);
-    rearLeft.follow(frontLeft);
-
-    frontLeft.setInverted(true); // pick CW versus CCW when motor controller is positive/green
-    frontRight.setInverted(false); // pick CW versus CCW when motor controller is positive/green
-   
+    frontRight.follow(frontLeft);
+    frontLeft.setInverted(true);
+    frontRight.setInverted(false);
     rearRight.setInverted(InvertType.FollowMaster);
-    rearLeft.setInverted(InvertType.FollowMaster); // match whatever talon0 is
-    //_victor0.setInverted(InvertType.OpposeMaster); // opposite whatever talon0 is
+    rearLeft.setInverted(InvertType.FollowMaster); 
 
     try{
       ahrs = new AHRS(SPI.Port.kMXP);
@@ -58,9 +63,11 @@ public class Drive extends Subsystem {
   public void TeleOpDrive(double left, double right){
     frontLeft.set(ControlMode.PercentOutput, Kp*left);
     frontRight.set(ControlMode.PercentOutput, Kp*right);
-   // rearLeft.set(ControlMode.PercentOutput, right);
-   // rearRight.set(ControlMode.PercentOutput, -left);
 
+    SmartDashboard.putNumber("Left Encoder: ", getLeftEncoder());
+    SmartDashboard.putNumber("Right Encoder: ", getRightEncoder());
+    SmartDashboard.putNumber("Left Distance: ", getLeftDistance());
+    SmartDashboard.putNumber("Right Distance: ", getRightDistance());
   }
 
   public double getRightEncoder(){
@@ -70,11 +77,19 @@ public class Drive extends Subsystem {
   public double getLeftEncoder(){
     return left.get();
   }
-  @Override
-  public void initDefaultCommand() {
-    setDefaultCommand(new DriveCommand());
+
+  public double getLeftDistance(){
+    return left.getDistance();
   }
 
+  public double getRightDistance(){
+    return right.getDistance();
+  }
+
+  public void resetEncoders(){
+    right.reset();
+    left.reset();
+  }
 
   public void resetGyro(){
     ahrs.reset();
@@ -84,9 +99,21 @@ public class Drive extends Subsystem {
     return ahrs.getAngle();
   }
 
-  
- 
+  public double getError( double desiredAngle){
+    double err = ahrs.getAngle() - desiredAngle;
+    if( err > 180 ){
+      err = ( err - 180 );
+    }else if ( err < -180){
+      err = - (err + 180);
+    }else {
 
+    }
+    return err;
+  }
 
+  @Override
+  public void initDefaultCommand() {
+    setDefaultCommand(new DriveCommand());
+  }
 
 }
