@@ -10,7 +10,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
@@ -18,21 +20,25 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Arrow extends Subsystem {
   
   VictorSPX arrow;
+  DigitalInput arrowLimitSwitch;
 
+  public Arrow(VictorSPX motor){
+    arrow = motor;
+    arrowLimitSwitch = new DigitalInput(4);
+  }
+ 
+  public void Move(double speed){
+    SmartDashboard.putBoolean("limitswitch: ", getArrowLimitSwitch());
+    arrow.set(ControlMode.PercentOutput, speed);
+  }
+
+  public boolean getArrowLimitSwitch(){
+    return arrowLimitSwitch.get();
+  }
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
-
-  public Arrow(VictorSPX motor){
-    arrow = motor;
-  }
- 
-  public void Move(double speed){
-    System.out.println("running at speed" + speed);
-    arrow.set(ControlMode.PercentOutput, speed);
-  }
-
 
 }

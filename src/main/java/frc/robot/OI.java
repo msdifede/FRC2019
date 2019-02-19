@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -20,8 +21,9 @@ import frc.robot.commands.*;
 public class OI {
 
   private Joystick driver, operator;
-  private Button greenButton, redButton, pinkButton, purpleButton, foldFlower, frontUp, frontDown, rearUp,
-  rearDown, driverA, intakebutton, driverB, driverY, driverX, l2lt, r2rt;
+  private Button greenButton, redButton, pinkButton, purpleButton, eject, frontUp, frontDown, rearUp,
+  rearDown, driverA, intakebutton, driverB, driverY, driverX, dehatch, r2rt, driverShoot, operatorJoystickUp,
+  operatorJoystickDown;
 
 
   public OI(){
@@ -31,16 +33,6 @@ public class OI {
     setButtons();
     setCommands();
  
-
-  //   System.out.println(operator.getY());
-  //   while(operator.getY() < 0){
-  //     System.out.println("loop1: " + operator.getRawAxis(1));
-  //     new IntakeCommand();
-  // }
-  //   while(operator.getRawAxis(1) > 0) {
-  //     System.out.println("loop2: " + operator.getRawAxis(1));
-  //     new OuttakeCommand();
-  //   }
   }
 
   public double getDriverLeftJoystick(){
@@ -53,52 +45,54 @@ public class OI {
 
   public void setButtons(){
     
+    operatorJoystickUp = new JoystickAnalogButton(operator, 1, .5); 
+    operatorJoystickDown = new JoystickAnalogButton(operator, 1, -.5);
 
-    l2lt = new JoystickAnalogButton(operator, 2 );
+    eject = new JoystickButton(operator, 5);  //topleft gray
+    dehatch = new JoystickAnalogButton(operator, 2 );
+    pinkButton = new JoystickButton(operator, 3); 
+    purpleButton = new JoystickButton(operator, 1);
+    greenButton = new JoystickButton(operator, 4);  
+    redButton = new JoystickButton(operator, 2); 
+    //intakebutton = new JoystickButton(operator, 6); //top right gray
     r2rt = new JoystickAnalogButton(operator, 3 );
 
-    greenButton = new JoystickButton(operator, 4);  //green button
-    redButton = new JoystickButton(operator, 2); //red button
-    foldFlower = new JoystickButton(operator, 5);  //topleft gray
-    pinkButton = new JoystickButton(operator, 3); //pink button
-    purpleButton = new JoystickButton(operator, 1); //purplebutton
     frontUp = new JoystickButton(operator, 7); //top 1
     frontDown = new JoystickButton(operator, 8); //top 2
+    rearUp = new JoystickButton(operator, 9);  //top 3
     rearDown  = new JoystickButton(operator, 10); //top 4
-    rearUp = new JoystickButton(operator, 9);  //top3
-    intakebutton = new JoystickButton(operator, 6); //top right gray
 
     driverA = new JoystickButton(driver, 1);
     driverB = new JoystickButton(driver, 2);
-    driverX = new JoystickButton( driver, 3);
+    driverX = new JoystickButton(driver, 3);
     driverY = new JoystickButton(driver, 4);
-    
+
+    driverShoot = new JoystickAnalogButton(driver, 3 );
   }
 
   public void setCommands(){
-    intakebutton.whenPressed( new IntakeBallCommand());
+   
+    eject.whileHeld(new PushHatchCommand());
+    dehatch.whileHeld(new PushHatchCommand()); //new command
 
- 
-    foldFlower.whileHeld(new OuttakeCommand());
-    l2lt.whileHeld(new PushHatchCommand()); //new command
-   
-   
-    driverA.whileHeld(new LineUpCommand());
-    driverB.whileHeld(new DriveStraightCommand(.5));
     pinkButton.whenPressed(new ArrowOutNewCommand());
     pinkButton.whenReleased(new ArrowInCommand());
     purpleButton.whenPressed(new ArrowInCommand());
-    //foldFlower.toggleWhenPressed(new DeanKamenSupportCommand());
+    greenButton.whenPressed(new SwitchViewCommand());
+    redButton.whenPressed(new SwitchSideViewCommand());
+    //intakebutton.whenPressed( new IntakeBallCommand());
+
     frontUp.whenPressed(new FrontRetractCommand());
     frontDown.whenPressed(new FrontExtendCommand());
     rearUp.whenPressed(new RearRetractCommand());
     rearDown.whenPressed(new RearExtendCommand());
+
+    driverA.whileHeld(new LineUpCommand());
+    driverB.whileHeld(new DriveStraightCommand(.5));
+    driverX.whenPressed(new DriveStraightDistanceCommand(40));
     driverY.whenPressed(new LineUpStraightCommandGroup());
 
-    greenButton.whenPressed(new SwitchViewCommand());
-    redButton.whenPressed(new SwitchSideViewCommand());
-
-    driverX.whenPressed(new DriveStraightDistanceCommand(20));
+    driverShoot.whenPressed( new CancelDriveCommand()); 
   }
 
 }
